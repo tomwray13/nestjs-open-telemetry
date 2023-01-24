@@ -19,10 +19,15 @@ const jaegerExporter = new JaegerExporter({
   endpoint: 'http://localhost:14268/api/traces',
 });
 
+const oltpExporter = new OTLPTraceExporter({
+  url: `https://api.honeycomb.io/v1/traces`,
+  headers: {
+    'x-honeycomb-team': process.env.HONEYCOMB_API_KEY,
+  },
+});
+
 const traceExporter =
-  process.env.NODE_ENV === `development`
-    ? jaegerExporter
-    : new OTLPTraceExporter();
+  process.env.NODE_ENV === `development` ? jaegerExporter : oltpExporter;
 
 const spanProcessor =
   process.env.NODE_ENV === `development`
